@@ -73,7 +73,7 @@ FUNCTION(ANTLR4_GENERATE)
     ENDIF ()
 
     IF (ARG_GEN_LISTENER)
-        SET(BuildListenerOption "-LISTener")
+        SET(BuildListenerOption "-listener")
 
         LIST(APPEND GeneratedTargets "${ARG_DIR}/${BASE_NAME}BaseListener.h")
         LIST(APPEND GeneratedTargets "${ARG_DIR}/${BASE_NAME}BaseListener.cpp")
@@ -82,7 +82,7 @@ FUNCTION(ANTLR4_GENERATE)
 
         LIST(APPEND GeneratorStatusMessage ", Listener Include- and Sourcefiles")
     ELSE ()
-        SET(BuildListenerOption "-no-LISTener")
+        SET(BuildListenerOption "-no-listener")
     ENDIF ()
 
     IF (ARG_GEN_VISITOR)
@@ -128,7 +128,13 @@ FUNCTION(ANTLR4_GENERATE)
             # Generate files
             "${Java_JAVA_EXECUTABLE}" -jar "${MY_ANTLR4_JAR_LOCATION}" -Werror -Dlanguage=Cpp ${BuildListenerOption} ${BuildVisitorOption} -o "${ARG_DIR}" ${NamespaceOption} "${ARG_G4}"
             WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+            RESULT_VARIABLE ANTLR_COMMAND_RESULT
     )
+    
+    # Add error handling
+    IF(NOT ANTLR_COMMAND_RESULT EQUAL 0)
+        MESSAGE(FATAL_ERROR "ANTLR4 command failed with result: ${ANTLR_COMMAND_RESULT}")
+    ENDIF()
 
     # SET output variables in parent scope
     SET(INCLUDE_DIR_${BASE_NAME} ${ARG_DIR} PARENT_SCOPE)

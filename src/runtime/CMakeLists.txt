@@ -20,6 +20,7 @@ ADD_TARGET(
         "${PROJECT_SOURCE_DIR}/include/_deps/antlr4/tree/xpath"
         DEFINE
         ANTLR4CPP_STATIC
+        NOMINMAX
         C_OPTION
         ${c_options}
 )
