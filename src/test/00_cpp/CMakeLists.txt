@@ -7,7 +7,7 @@ IF (${BUILD${PROJECT_NAME}TEST})
             ${parserName}
             ${CMAKE_CURRENT_SOURCE_DIR}/CPP14.g4
             BOTH
-            FALSE
+            TRUE
             TRUE
             My
     )
@@ -17,5 +17,5 @@ ADD_TARGET(
         TEST
         MODE EXE
         SOURCE "${ANTLR4_SRC_FILES_${parserName}}"
-        LIB My::MyANTLR_core
+        LIB My::MyANTLR_runtime
 )
