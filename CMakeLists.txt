@@ -8,59 +8,6 @@ INIT_MYCMAKE()
 
 INIT_PROJECT()
 
-# ref: ANTLR4 c++ runtime
-
-IF (MSVC)
-    SET(ANTLR_CXX_WARNING_FLAGS "  /W4")
-ELSE ()
-    SET(ANTLR_CXX_WARNING_FLAGS "  -Wall -pedantic -W")
-ENDIF ()
-
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MY_CXX_WARNING_FLAGS}")
-IF (MSVC_VERSION)
-    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Od /Zi /MP ${MY_CXX_WARNING_FLAGS}")
-    SET(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /O1 /Oi /Ob2 /Gy /MP /DNDEBUG ${MY_CXX_WARNING_FLAGS}")
-    SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /Oi /Ob2 /Gy /MP /DNDEBUG ${MY_CXX_WARNING_FLGAS}")
-    SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /O2 /Oi /Ob2 /Gy /MP /Zi ${MY_CXX_WARNING_FLAGS}")
-ELSE ()
-    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g ${MY_CXX_WARNING_FLAGS}")
-    SET(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} -Os -DNDEBUG ${MY_CXX_WARNING_FLAGS}")
-    SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG ${MY_CXX_WARNING_FLGAS}")
-    SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O2 -g ${MY_CXX_WARNING_FLAGS}")
-ENDIF ()
-
-# Compiler-specIFic C++11 activation.
-IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
-    EXECUTE_PROCESS(
-            COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-    # Just g++-5.0 and greater contain <codecvt> header. (test in ubuntu)
-    IF (NOT (GCC_VERSION VERSION_GREATER 5.0 OR GCC_VERSION VERSION_EQUAL 5.0))
-        MESSAGE(FATAL_ERROR "${PROJECT_NAME} requires g++ 5.0 or greater.")
-    ENDIF ()
-ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND ANDROID)
-    # Need -Os cflag and cxxflags here to work with exception handling on armeabi.
-    # see  https://github.com/android-ndk/ndk/issues/573
-    # and without -stdlib=libc++ cxxflags
-ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND APPLE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
-ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_SYSTEM_NAME MATCHES "Linux" OR CMAKE_SYSTEM_NAME MATCHES "FreeBSD"))
-    EXECUTE_PROCESS(
-            COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE CLANG_VERSION)
-    IF (NOT (CLANG_VERSION VERSION_GREATER 4.2.1 OR CLANG_VERSION VERSION_EQUAL 4.2.1))
-        message(FATAL_ERROR "${PROJECT_NAME} requires clang 4.2.1 or greater.")
-    ENDIF ()
-    # You can use libc++ to compile this project when g++ is NOT greater than or equal to 5.0.
-    IF (WITH_LIBCXX)
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-    ENDIF ()
-ELSEIF (MSVC_VERSION GREATER 1800 OR MSVC_VERSION EQUAL 1800)
-    # Visual Studio 2012+ supports c++11 features 
-ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Emscripten")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
-ELSE ()
-    message(FATAL_ERROR "Your C++ compiler does not support C++11.")
-ENDIF ()
-
 DOWNLOAD_ZIP(
         https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_06032025.zip
         antlr4.zip
