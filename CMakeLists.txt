@@ -1,0 +1,99 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.20 FATAL_ERROR)
+
+PROJECT(MyANTLR VERSION 0.0.1 LANGUAGES CXX)
+MESSAGE(STATUS "Project: ${PROJECT_NAME} ${PROJECT_VERSION}")
+
+INCLUDE(cmake/InitMyCMake.cmake)
+INIT_MYCMAKE()
+
+INIT_PROJECT()
+
+DOWNLOAD_ZIP(
+        https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_06032025.zip
+        antlr4.zip
+        SHA256 d7aed9ced7e34dbc3655470f03dccf185d12f3dc44b5ed05019a6acce98c4f98
+)
+
+# ref: ANTLR4 c++ runtime
+IF (MSVC)
+    SET(ANTLR_CXX_WARNING_FLAGS "  /W4")
+ELSE ()
+    SET(ANTLR_CXX_WARNING_FLAGS "  -Wall -pedantic -W")
+ENDIF ()
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MY_CXX_WARNING_FLAGS}")
+IF (MSVC_VERSION)
+    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Od /Zi /MP ${MY_CXX_WARNING_FLAGS}")
+    SET(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /O1 /Oi /Ob2 /Gy /MP /DNDEBUG ${MY_CXX_WARNING_FLAGS}")
+    SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /Oi /Ob2 /Gy /MP /DNDEBUG ${MY_CXX_WARNING_FLGAS}")
+    SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /O2 /Oi /Ob2 /Gy /MP /Zi ${MY_CXX_WARNING_FLAGS}")
+ELSE ()
+    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g ${MY_CXX_WARNING_FLAGS}")
+    SET(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} -Os -DNDEBUG ${MY_CXX_WARNING_FLAGS}")
+    SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG ${MY_CXX_WARNING_FLGAS}")
+    SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O2 -g ${MY_CXX_WARNING_FLAGS}")
+ENDIF ()
+
+# Compiler-specIFic C++11 activation.
+IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
+    execute_process(
+            COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+    # Just g++-5.0 and greater contain <codecvt> header. (test in ubuntu)
+    IF (NOT (GCC_VERSION VERSION_GREATER 5.0 OR GCC_VERSION VERSION_EQUAL 5.0))
+        message(FATAL_ERROR "${PROJECT_NAME} requires g++ 5.0 or greater.")
+    ENDIF ()
+ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND ANDROID)
+    # Need -Os cflag and cxxflags here to work with exception handling on armeabi.
+    # see  https://github.com/android-ndk/ndk/issues/573
+    # and without -stdlib=libc++ cxxflags
+ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND APPLE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_SYSTEM_NAME MATCHES "Linux" OR CMAKE_SYSTEM_NAME MATCHES "FreeBSD"))
+    EXECUTE_PROCESS(
+            COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE CLANG_VERSION)
+    IF (NOT (CLANG_VERSION VERSION_GREATER 4.2.1 OR CLANG_VERSION VERSION_EQUAL 4.2.1))
+        message(FATAL_ERROR "${PROJECT_NAME} requires clang 4.2.1 or greater.")
+    ENDIF ()
+    # You can use libc++ to compile this project when g++ is NOT greater than or equal to 5.0.
+    IF (WITH_LIBCXX)
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+    ENDIF ()
+ELSEIF (MSVC_VERSION GREATER 1800 OR MSVC_VERSION EQUAL 1800)
+    # Visual Studio 2012+ supports c++11 features 
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Emscripten")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+ELSE ()
+    message(FATAL_ERROR "Your C++ compiler does not support C++11.")
+ENDIF ()
+
+IF (CMAKE_C_COMPILER_ID MATCHES "MSVC")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -wd4996")
+ENDIF ()
+
+ADD_SUB_DIRS_REC(src)
+
+# install
+PACKAGE_NAME(PACKAGE_NAME)
+
+CONFIGURE_PACKAGE_CONFIG_FILE(
+        config/antlr4-generator.cmake.in
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}GeneratorConfig.cmake"
+        INSTALL_DESTINATION "${PACKAGE_NAME}/cmake"
+        NO_SET_AND_CHECK_MACRO
+        NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+
+WRITE_BASIC_PACKAGE_VERSION_FILE(
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}GeneratorConfigVersion.cmake"
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMinorVersion)
+
+INSTALL(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}GeneratorConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}GeneratorConfigVersion.cmake"
+        "config/Antlr4Package.md"
+        "config/README.md"
+        "config/_deps/antlr-4.8-complete.jar"
+        DESTINATION "${PACKAGE_NAME}/cmake"
+)
+
+EXPORT_TARGETS(DIRECTORIES "include")
