@@ -714,3 +714,20 @@ bin/
 lib/
 build/
 _deps/
+
+# Misc
+*Config.h
+
+*.uscene
+
+*.html
+
+*.doc
+*.docx
+*.ppt
+*.pptx
+
+*.filters
+*.vcxproj*.sln
+
+ParserCpp14/

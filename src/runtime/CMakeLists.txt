@@ -7,7 +7,7 @@ ENDIF ()
 ADD_TARGET(
         MODE STATIC
         SOURCE
-        "${PROJECT_SOURCE_DIR}/include"
+        "${PROJECT_SOURCE_DIR}/include/_deps/antlr4"
         INC
         "${PROJECT_SOURCE_DIR}/include/_deps/antlr4"
         INC_PRIVATE
