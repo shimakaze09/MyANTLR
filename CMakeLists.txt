@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20 FATAL_ERROR)
 
-PROJECT(MyANTLR VERSION 0.0.1 LANGUAGES CXX)
+PROJECT(MyANTLR VERSION 0.0.2 LANGUAGES CXX)
 MESSAGE(STATUS "Project: ${PROJECT_NAME} ${PROJECT_VERSION}")
 
 INCLUDE(cmake/InitMyCMake.cmake)
@@ -8,13 +8,8 @@ INIT_MYCMAKE()
 
 INIT_PROJECT()
 
-DOWNLOAD_ZIP(
-        https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_06032025.zip
-        antlr4.zip
-        SHA256 d7aed9ced7e34dbc3655470f03dccf185d12f3dc44b5ed05019a6acce98c4f98
-)
-
 # ref: ANTLR4 c++ runtime
+
 IF (MSVC)
     SET(ANTLR_CXX_WARNING_FLAGS "  /W4")
 ELSE ()
@@ -36,11 +31,11 @@ ENDIF ()
 
 # Compiler-specIFic C++11 activation.
 IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
-    execute_process(
+    EXECUTE_PROCESS(
             COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
     # Just g++-5.0 and greater contain <codecvt> header. (test in ubuntu)
     IF (NOT (GCC_VERSION VERSION_GREATER 5.0 OR GCC_VERSION VERSION_EQUAL 5.0))
-        message(FATAL_ERROR "${PROJECT_NAME} requires g++ 5.0 or greater.")
+        MESSAGE(FATAL_ERROR "${PROJECT_NAME} requires g++ 5.0 or greater.")
     ENDIF ()
 ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND ANDROID)
     # Need -Os cflag and cxxflags here to work with exception handling on armeabi.
@@ -66,34 +61,26 @@ ELSE ()
     message(FATAL_ERROR "Your C++ compiler does not support C++11.")
 ENDIF ()
 
-IF (CMAKE_C_COMPILER_ID MATCHES "MSVC")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -wd4996")
+DOWNLOAD_ZIP(
+        https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_06032025.zip
+        antlr4.zip
+        SHA256 ae4f410610033ce2ee116b3f2b621fda5f03c6c6c943414943622adc0e435af1
+)
+
+IF (BUILDMyANTLRTEST)
+    INCLUDE(cmake/MyANTLRGenerator.cmake)
 ENDIF ()
 
 ADD_SUB_DIRS_REC(src)
+ADD_SUB_DIRS_REC(test)
 
 # install
 PACKAGE_NAME(PACKAGE_NAME)
 
-CONFIGURE_PACKAGE_CONFIG_FILE(
-        config/antlr4-generator.cmake.in
-        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}GeneratorConfig.cmake"
-        INSTALL_DESTINATION "${PACKAGE_NAME}/cmake"
-        NO_SET_AND_CHECK_MACRO
-        NO_CHECK_REQUIRED_COMPONENTS_MACRO)
-
-WRITE_BASIC_PACKAGE_VERSION_FILE(
-        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}GeneratorConfigVersion.cmake"
-        VERSION ${PROJECT_VERSION}
-        COMPATIBILITY SameMinorVersion)
-
 INSTALL(FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}GeneratorConfig.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}GeneratorConfigVersion.cmake"
         "config/Antlr4Package.md"
         "config/README.md"
-        "config/_deps/antlr-4.8-complete.jar"
         DESTINATION "${PACKAGE_NAME}/cmake"
 )
 
-EXPORT_TARGETS(DIRECTORIES "include")
+EXPORT_TARGETS(DIRECTORIES "include;cmake")
