@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20 FATAL_ERROR)
 
-PROJECT(MyANTLR VERSION 0.1.2 LANGUAGES CXX)
+PROJECT(MyANTLR VERSION 0.1.3 LANGUAGES CXX C)
 MESSAGE(STATUS "Project: ${PROJECT_NAME} ${PROJECT_VERSION}")
 
 INCLUDE(cmake/InitMyCMake.cmake)
@@ -10,11 +10,10 @@ INCLUDE(cmake/ANTLR4Generator.cmake)
 INIT_PROJECT()
 
 DOWNLOAD_ZIP(
-        https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_11032025.zip
-        antlr4_10032025.zip
-        SHA256 5dbeabb84b694fb025fd032e27348752a77a22dd6972bf9ff8a8e3240f48d936
+        https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_19032025.zip
+        antlr4_19032025.zip
+        SHA256 5dea841b94c717862b8872de05f50c981f4cad7632d8b29826117aadc8e45b6e
 )
-
 
 ADD_SUB_DIRS_REC(include)
 ADD_SUB_DIRS_REC(src)
