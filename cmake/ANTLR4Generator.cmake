@@ -106,7 +106,7 @@ FUNCTION(ANTLR4_GENERATE)
         SET(NamespaceOption "")
     ENDIF ()
 
-    IF (NOT Java_FOUND)
+    IF (NOT Java_JAVA_EXECUTABLE)
         MESSAGE(FATAL_ERROR "Java is required to process grammar or lexer files! - Use 'FIND_PACKAGE(Java COMPONENTS Runtime REQUIRED)'")
     ENDIF ()
 
@@ -130,11 +130,11 @@ FUNCTION(ANTLR4_GENERATE)
             WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
             RESULT_VARIABLE ANTLR_COMMAND_RESULT
     )
-    
+
     # Add error handling
-    IF(NOT ANTLR_COMMAND_RESULT EQUAL 0)
+    IF (NOT ANTLR_COMMAND_RESULT EQUAL 0)
         MESSAGE(FATAL_ERROR "ANTLR4 command failed with result: ${ANTLR_COMMAND_RESULT}")
-    ENDIF()
+    ENDIF ()
 
     # SET output variables in parent scope
     SET(INCLUDE_DIR_${BASE_NAME} ${ARG_DIR} PARENT_SCOPE)
