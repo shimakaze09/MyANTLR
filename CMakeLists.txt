@@ -5,14 +5,18 @@ MESSAGE(STATUS "Project: ${PROJECT_NAME} ${PROJECT_VERSION}")
 
 INCLUDE(cmake/InitMyCMake.cmake)
 INIT_MYCMAKE()
-INCLUDE(cmake/ANTLR4Generator.cmake)
 
 INIT_PROJECT()
 
 DOWNLOAD_ZIP(
-        https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_25032025.zip
-        antlr4_25032025.zip
-        SHA256 B889269D7CC49C0C54B40107ACB9A6FE5171E6307516DA348EBAACD93B54A135
+        https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_runtime_26032025.zip
+        antlr4_runtime_26032025.zip
+        SHA256 906dbec5957da4a39910e97a95b9019deed03bf686b21a36f9781243311fc2d3
+)
+DOWNLOAD_ZIP(
+        https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_cpp14_27032025.zip
+        antlr4_cpp14_27032025.zip
+        SHA256 713dc932fe37f5e9d3b0299d1571613f1a036c83b41772e70473f2bc37ec2ab8
 )
 
 ADD_SUB_DIRS_REC(include)
