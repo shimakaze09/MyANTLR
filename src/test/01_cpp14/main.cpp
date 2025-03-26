@@ -12,9 +12,9 @@
 
 #include <iostream>
 
-#include <MyANTLR/ParserCpp14/CPP14BaseVisitor.h>
 #include <MyANTLR/ParserCpp14/CPP14Lexer.h>
 #include <MyANTLR/ParserCpp14/CPP14Parser.h>
+#include <MyANTLR/ParserCpp14/CPP14ParserBaseVisitor.h>
 #include <antlr4-runtime.h>
 
 #include <Windows.h>
@@ -29,15 +29,20 @@ int main(int argc, const char* argv[]) {
 namespace A::B {
   struct [[meta("hello world")]] Cmpt{
   };
+  enum class [[info]] Color {
+    RED [[test]],
+    GREEN,
+    BLUE
+  };
 }
 )");
   CPP14Lexer lexer(&input);
   CommonTokenStream tokens(&lexer);
 
-  CPP14BaseVisitor visitor;
+  CPP14ParserBaseVisitor visitor;
 
   CPP14Parser parser(&tokens);
-  tree::ParseTree* tree = parser.translationunit();
+  tree::ParseTree* tree = parser.translationUnit();
   tree->accept(&visitor);
   std::wstring s = antlrcpp::s2ws(tree->toStringTree(&parser)) + L"\n";
 
