@@ -17,10 +17,6 @@
 #include <MyANTLR/ParserCpp14/CPP14ParserBaseVisitor.h>
 #include <antlr4-runtime.h>
 
-#include <Windows.h>
-
-#pragma execution_character_set("utf-8")
-
 using namespace My;
 using namespace antlr4;
 
