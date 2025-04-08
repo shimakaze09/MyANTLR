@@ -18,6 +18,10 @@ DOWNLOAD_ZIP(
         antlr4_cpp14_27032025.zip
         SHA256 713dc932fe37f5e9d3b0299d1571613f1a036c83b41772e70473f2bc37ec2ab8
 )
+# name in antlr4_cpp14_20201115.zip is wrong, so change it here
+IF (EXISTS "${CMAKE_SOURCE_DIR}/include/MyANTLR/ParserCPP14")
+    FILE(RENAME "${CMAKE_SOURCE_DIR}/include/MyANTLR/ParserCPP14" "${CMAKE_SOURCE_DIR}/include/MyANTLR/ParserCpp14")
+ENDIF ()
 
 ADD_SUB_DIRS_REC(include)
 ADD_SUB_DIRS_REC(src)
