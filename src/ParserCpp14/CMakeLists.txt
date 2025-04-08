@@ -7,6 +7,7 @@ ELSE ()
 ENDIF ()
 
 ADD_TARGET(
+        CXX_STANDARD 17
         MODE STATIC
         SOURCE
         "${PROJECT_SOURCE_DIR}/include/MyANTLR/ParserCpp14"

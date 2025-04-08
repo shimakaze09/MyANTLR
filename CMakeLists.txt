@@ -6,7 +6,7 @@ MESSAGE(STATUS "Project: ${PROJECT_NAME} ${PROJECT_VERSION}")
 INCLUDE(cmake/InitMyCMake.cmake)
 INIT_MYCMAKE(VERSION 0.6.4)
 
-INIT_PROJECT(CXX_STANDARD 17)
+INIT_PROJECT()
 
 DOWNLOAD_ZIP(
         https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_runtime_26032025.zip
