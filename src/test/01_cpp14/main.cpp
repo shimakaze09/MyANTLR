@@ -17,7 +17,7 @@
 #include <MyANTLR/ParserCpp14/CPP14ParserBaseVisitor.h>
 #include <antlr4-runtime.h>
 
-using namespace My;
+using namespace Smkz;
 using namespace antlr4;
 
 int main(int argc, const char* argv[]) {

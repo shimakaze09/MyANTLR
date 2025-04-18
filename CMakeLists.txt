@@ -14,9 +14,9 @@ DOWNLOAD_ZIP(
         SHA256 906dbec5957da4a39910e97a95b9019deed03bf686b21a36f9781243311fc2d3
 )
 DOWNLOAD_ZIP(
-        https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_cpp14_27032025.zip
-        antlr4_cpp14_27032025.zip
-        SHA256 713dc932fe37f5e9d3b0299d1571613f1a036c83b41772e70473f2bc37ec2ab8
+        https://cdn.jsdelivr.net/gh/shimakaze09/MyData@main/MyANTLR/antlr4_cpp14_19042025.zip
+        antlr4_cpp14_19042025.zip
+        SHA256 bb35637c9c5337403d8796316ddb3a09f3c1ea33c0e8efa27c37cf943309d3c8
 )
 # name in antlr4_cpp14_20201115.zip is wrong, so change it here
 IF (EXISTS "${PROJECT_SOURCE_DIR}/include/MyANTLR/ParserCPP14")
