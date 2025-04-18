@@ -1,8 +1,18 @@
 SET(c_options "")
 
-IF (MSVC)
-    LIST(APPEND c_options /wd4996)
-ENDIF ()
+IF(MSVC)
+    LIST(APPEND c_options "/wd4996")
+ENDIF()
+
+SET(c_options_private "")
+
+IF(MSVC)
+    LIST(APPEND c_options_private "/MP")
+ELSEIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "ClANG")
+    #
+ELSEIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    #
+ENDIF()
 
 ADD_TARGET(
         CXX_STANDARD 17
@@ -24,4 +34,6 @@ ADD_TARGET(
         NOMINMAX
         C_OPTION
         ${c_options}
+        C_OPTION_PRIVATE
+        ${c_options_private}        
 )
