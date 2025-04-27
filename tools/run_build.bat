@@ -1,1 +1,1 @@
-java org.antlr.v4.Tool -Werror -Dlanguage=Cpp -listener -visitor -package My -o ParserCpp14 CPP14Lexer.g4 CPP14Parser.g4
+java org.antlr.v4.Tool -Werror -Dlanguage=Cpp -listener -visitor -package Smkz -o ParserCpp14 CPP14Lexer.g4 CPP14Parser.g4

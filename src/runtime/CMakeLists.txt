@@ -24,6 +24,7 @@ ADD_TARGET(
         INC_PRIVATE
         "${PROJECT_SOURCE_DIR}/include/_deps/antlr4/atn"
         "${PROJECT_SOURCE_DIR}/include/_deps/antlr4/dfa"
+        "${PROJECT_SOURCE_DIR}/include/_deps/antlr4/internal"
         "${PROJECT_SOURCE_DIR}/include/_deps/antlr4/misc"
         "${PROJECT_SOURCE_DIR}/include/_deps/antlr4/support"
         "${PROJECT_SOURCE_DIR}/include/_deps/antlr4/tree"
