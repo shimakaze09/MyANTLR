@@ -22,11 +22,6 @@
 using namespace Smkz;
 using namespace antlr4;
 
-std::wstring s2ws(const std::string& str) {
-  std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-  return converter.from_bytes(str);
-}
-
 int main(int argc, const char* argv[]) {
   ANTLRInputStream input(R"(
 namespace A::B {
@@ -47,7 +42,7 @@ namespace A::B {
   CPP14Parser parser(&tokens);
   tree::ParseTree* tree = parser.translationUnit();
   tree->accept(&visitor);
-  std::wstring s = s2ws(tree->toStringTree(&parser)) + L"\n";
+  std::wstring s = antlrcpp::s2ws(tree->toStringTree(&parser)) + L"\n";
 
   // OutputDebugString(s.data()); // Only works properly since VS 2015.
   std::wcout << "Parse Tree: " << s
